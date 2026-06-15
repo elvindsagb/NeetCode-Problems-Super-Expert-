@@ -1,0 +1,40 @@
+from collections import deque
+
+def word_ladder(beginWord, endWord, wordList):
+
+    wordSet = set(wordList)
+
+    if endWord not in wordSet:
+        return 0
+
+    queue = deque([(beginWord, 1)])
+
+    while queue:
+
+        word, level = queue.popleft()
+
+        if word == endWord:
+            return level
+
+        for i in range(len(word)):
+
+            for c in "abcdefghijklmnopqrstuvwxyz":
+
+                nxt = word[:i] + c + word[i+1:]
+
+                if nxt in wordSet:
+
+                    queue.append((nxt, level + 1))
+
+                    wordSet.remove(nxt)
+
+    return 0
+
+
+print(
+    word_ladder(
+        "hit",
+        "cog",
+        ["hot","dot","dog","lot","log","cog"]
+    )
+)
