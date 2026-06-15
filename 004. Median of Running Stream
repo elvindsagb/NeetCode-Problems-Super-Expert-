@@ -1,0 +1,48 @@
+import heapq
+
+class RunningMedian:
+
+    def __init__(self):
+
+        self.small = []
+        self.large = []
+
+    def add(self, num):
+
+        heapq.heappush(
+            self.small,
+            -num
+        )
+
+        heapq.heappush(
+            self.large,
+            -heapq.heappop(self.small)
+        )
+
+        if len(self.large) > len(self.small):
+
+            heapq.heappush(
+                self.small,
+                -heapq.heappop(self.large)
+            )
+
+    def median(self):
+
+        if len(self.small) > len(self.large):
+
+            return -self.small[0]
+
+        return (
+            -self.small[0]
+            +
+            self.large[0]
+        ) / 2
+
+
+rm = RunningMedian()
+
+for x in [10,20,30,40,50]:
+
+    rm.add(x)
+
+    print(rm.median())
