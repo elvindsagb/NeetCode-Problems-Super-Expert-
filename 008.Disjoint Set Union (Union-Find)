@@ -1,0 +1,35 @@
+class DSU:
+
+    def __init__(self, n):
+
+        self.parent = []
+
+        for i in range(n):
+            self.parent.append(i)
+
+    def find(self, x):
+
+        if self.parent[x] == x:
+            return x
+
+        self.parent[x] = self.find(
+            self.parent[x]
+        )
+
+        return self.parent[x]
+
+    def union(self, a, b):
+
+        pa = self.find(a)
+        pb = self.find(b)
+
+        if pa != pb:
+            self.parent[pb] = pa
+
+
+dsu = DSU(5)
+
+dsu.union(0,1)
+dsu.union(1,2)
+
+print(dsu.find(2))
