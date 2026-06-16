@@ -1,0 +1,61 @@
+N = 8
+
+board = []
+
+for _ in range(N):
+    board.append(["."] * N)
+
+def is_safe(row, col):
+
+    for i in range(col):
+        if board[row][i] == "Q":
+            return False
+
+    i = row
+    j = col
+
+    while i >= 0 and j >= 0:
+
+        if board[i][j] == "Q":
+            return False
+
+        i -= 1
+        j -= 1
+
+    i = row
+    j = col
+
+    while i < N and j >= 0:
+
+        if board[i][j] == "Q":
+            return False
+
+        i += 1
+        j -= 1
+
+    return True
+
+def solve(col):
+
+    if col == N:
+
+        for row in board:
+            print(" ".join(row))
+
+        return True
+
+    for row in range(N):
+
+        if is_safe(row, col):
+
+            board[row][col] = "Q"
+
+            if solve(col + 1):
+                return True
+
+            board[row][col] = "."
+
+    return False
+
+
+solve(0)
