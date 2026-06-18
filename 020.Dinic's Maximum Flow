@@ -1,0 +1,58 @@
+class Edge:
+
+    def __init__(self, to, cap):
+
+        self.to = to
+        self.cap = cap
+
+
+n = 4
+
+graph = [[] for _ in range(n)]
+
+def add_edge(u, v, cap):
+
+    graph[u].append(
+        [v, cap, len(graph[v])]
+    )
+
+    graph[v].append(
+        [u, 0, len(graph[u])-1]
+    )
+
+
+add_edge(0,1,3)
+add_edge(0,2,2)
+add_edge(1,2,1)
+add_edge(1,3,2)
+add_edge(2,3,4)
+
+def bfs():
+
+    level = [-1] * n
+
+    level[0] = 0
+
+    queue = [0]
+
+    front = 0
+
+    while front < len(queue):
+
+        u = queue[front]
+        front += 1
+
+        for v, cap, rev in graph[u]:
+
+            if cap > 0 and level[v] < 0:
+
+                level[v] = level[u] + 1
+
+                queue.append(v)
+
+    return level
+
+
+print(
+    "Dinic Graph Built"
+)
