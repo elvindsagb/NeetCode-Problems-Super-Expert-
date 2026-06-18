@@ -1,0 +1,72 @@
+class Node:
+    def __init__(self):
+        self.children = {}
+        self.fail = None
+        self.output = []
+
+root = Node()
+
+patterns = ["he", "she", "his", "hers"]
+
+for word in patterns:
+
+    node = root
+
+    for ch in word:
+
+        if ch not in node.children:
+            node.children[ch] = Node()
+
+        node = node.children[ch]
+
+    node.output.append(word)
+
+queue = []
+
+for child in root.children.values():
+
+    child.fail = root
+
+    queue.append(child)
+
+front = 0
+
+while front < len(queue):
+
+    current = queue[front]
+    front += 1
+
+    for ch, nxt in current.children.items():
+
+        fail = current.fail
+
+        while fail and ch not in fail.children:
+            fail = fail.fail
+
+        if fail:
+            nxt.fail = fail.children[ch]
+        else:
+            nxt.fail = root
+
+        nxt.output += nxt.fail.output
+
+        queue.append(nxt)
+
+text = "ushers"
+
+node = root
+
+for i, ch in enumerate(text):
+
+    while node != root and ch not in node.children:
+        node = node.fail
+
+    if ch in node.children:
+        node = node.children[ch]
+
+    for pattern in node.output:
+        print(
+            pattern,
+            "found at",
+            i - len(pattern) + 1
+        )
