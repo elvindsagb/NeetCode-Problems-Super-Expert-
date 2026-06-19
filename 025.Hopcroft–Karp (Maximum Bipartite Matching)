@@ -1,0 +1,47 @@
+left = 4
+right = 4
+
+graph = [
+    [0,1],
+    [1,2],
+    [2,3],
+    [0]
+]
+
+match_right = [-1] * right
+
+def bpm(u, visited):
+
+    for v in graph[u]:
+
+        if visited[v]:
+            continue
+
+        visited[v] = True
+
+        if (
+            match_right[v] == -1
+            or
+            bpm(
+                match_right[v],
+                visited
+            )
+        ):
+
+            match_right[v] = u
+
+            return True
+
+    return False
+
+
+result = 0
+
+for u in range(left):
+
+    visited = [False] * right
+
+    if bpm(u, visited):
+        result += 1
+
+print(result)
