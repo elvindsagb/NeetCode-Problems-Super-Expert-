@@ -1,0 +1,55 @@
+n = 7
+
+graph = [
+    [1,2],
+    [0,3,4],
+    [0,5,6],
+    [1],
+    [1],
+    [2],
+    [2]
+]
+
+size = [0] * n
+
+def dfs(node, parent):
+
+    size[node] = 1
+
+    for child in graph[node]:
+
+        if child != parent:
+
+            dfs(child, node)
+
+            size[node] += size[child]
+
+
+def centroid(node, parent, total):
+
+    for child in graph[node]:
+
+        if (
+            child != parent
+            and
+            size[child] > total // 2
+        ):
+
+            return centroid(
+                child,
+                node,
+                total
+            )
+
+    return node
+
+
+dfs(0,-1)
+
+print(
+    centroid(
+        0,
+        -1,
+        size[0]
+    )
+)
