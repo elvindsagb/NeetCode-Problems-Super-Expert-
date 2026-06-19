@@ -1,0 +1,47 @@
+class Line:
+
+    def __init__(self, m, c):
+
+        self.m = m
+        self.c = c
+
+    def value(self, x):
+
+        return self.m * x + self.c
+
+
+class CHT:
+
+    def __init__(self):
+
+        self.lines = []
+
+    def add_line(self, m, c):
+
+        self.lines.append(
+            Line(m, c)
+        )
+
+    def query(self, x):
+
+        best = float('inf')
+
+        for line in self.lines:
+
+            best = min(
+                best,
+                line.value(x)
+            )
+
+        return best
+
+
+cht = CHT()
+
+cht.add_line(2,3)
+cht.add_line(1,5)
+cht.add_line(4,1)
+
+print(
+    cht.query(3)
+)
