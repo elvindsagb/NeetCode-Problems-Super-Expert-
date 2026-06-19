@@ -1,0 +1,58 @@
+class HLD:
+
+    def __init__(self, n):
+
+        self.n = n
+
+        self.graph = [[] for _ in range(n)]
+
+        self.parent = [-1] * n
+        self.depth = [0] * n
+        self.size = [0] * n
+        self.heavy = [-1] * n
+
+    def add_edge(self, u, v):
+
+        self.graph[u].append(v)
+        self.graph[v].append(u)
+
+    def dfs(self, node, par):
+
+        self.size[node] = 1
+
+        max_subtree = 0
+
+        for child in self.graph[node]:
+
+            if child == par:
+                continue
+
+            self.parent[child] = node
+
+            self.depth[child] = (
+                self.depth[node] + 1
+            )
+
+            self.dfs(child, node)
+
+            self.size[node] += self.size[child]
+
+            if self.size[child] > max_subtree:
+
+                max_subtree = self.size[child]
+
+                self.heavy[node] = child
+
+
+hld = HLD(7)
+
+hld.add_edge(0,1)
+hld.add_edge(0,2)
+hld.add_edge(1,3)
+hld.add_edge(1,4)
+hld.add_edge(2,5)
+hld.add_edge(2,6)
+
+hld.dfs(0,-1)
+
+print(hld.heavy)
