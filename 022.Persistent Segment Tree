@@ -1,0 +1,72 @@
+class Node:
+
+    def __init__(
+        self,
+        left=None,
+        right=None,
+        value=0
+    ):
+
+        self.left = left
+        self.right = right
+        self.value = value
+
+
+def build(start, end):
+
+    if start == end:
+        return Node()
+
+    mid = (start + end) // 2
+
+    return Node(
+        build(start, mid),
+        build(mid+1, end)
+    )
+
+
+def update(
+    node,
+    start,
+    end,
+    idx
+):
+
+    if start == end:
+
+        return Node(
+            value=node.value + 1
+        )
+
+    mid = (start + end) // 2
+
+    if idx <= mid:
+
+        return Node(
+            update(
+                node.left,
+                start,
+                mid,
+                idx
+            ),
+            node.right,
+            node.value + 1
+        )
+
+    return Node(
+        node.left,
+        update(
+            node.right,
+            mid+1,
+            end,
+            idx
+        ),
+        node.value + 1
+    )
+
+
+root = build(1,10)
+
+root2 = update(root,1,10,5)
+
+print(root2.value)
