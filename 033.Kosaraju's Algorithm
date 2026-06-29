@@ -1,0 +1,55 @@
+def dfs(v, visited, graph, stack):
+
+    visited[v] = True
+
+    for nei in graph[v]:
+        if not visited[nei]:
+            dfs(nei, visited, graph, stack)
+
+    stack.append(v)
+
+def reverse_graph(graph):
+
+    rev = [[] for _ in range(len(graph))]
+
+    for i in range(len(graph)):
+        for j in graph[i]:
+            rev[j].append(i)
+
+    return rev
+
+def dfs2(v, visited, graph):
+
+    visited[v] = True
+    print(v, end=" ")
+
+    for nei in graph[v]:
+        if not visited[nei]:
+            dfs2(nei, visited, graph)
+
+graph = [
+    [1],
+    [2],
+    [0,3],
+    [4],
+    []
+]
+
+visited = [False]*5
+stack = []
+
+for i in range(5):
+    if not visited[i]:
+        dfs(i, visited, graph, stack)
+
+rev = reverse_graph(graph)
+
+visited = [False]*5
+
+while stack:
+
+    node = stack.pop()
+
+    if not visited[node]:
+        dfs2(node, visited, rev)
+        print()
