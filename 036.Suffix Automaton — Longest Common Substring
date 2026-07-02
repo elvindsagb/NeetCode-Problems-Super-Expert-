@@ -1,0 +1,90 @@
+Problem
+
+Given two strings, find the length of the longest common substring between them.
+
+Concepts
+Suffix Automaton
+String processing
+State transitions
+
+------------------------------------------------------------------------------------------------------------------
+
+class State:
+    def __init__(self):
+        self.next = {}
+        self.link = -1
+        self.length = 0
+
+
+class SuffixAutomaton:
+    def __init__(self):
+        self.states = [State()]
+        self.last = 0
+
+    def extend(self, ch):
+        curr = len(self.states)
+        self.states.append(State())
+        self.states[curr].length = self.states[self.last].length + 1
+
+        p = self.last
+
+        while p != -1 and ch not in self.states[p].next:
+            self.states[p].next[ch] = curr
+            p = self.states[p].link
+
+        if p == -1:
+            self.states[curr].link = 0
+        else:
+            q = self.states[p].next[ch]
+
+            if self.states[p].length + 1 == self.states[q].length:
+                self.states[curr].link = q
+            else:
+                clone = len(self.states)
+                self.states.append(State())
+                self.states[clone].length = self.states[p].length + 1
+                self.states[clone].next = self.states[q].next.copy()
+                self.states[clone].link = self.states[q].link
+
+                while p != -1 and self.states[p].next.get(ch) == q:
+                    self.states[p].next[ch] = clone
+                    p = self.states[p].link
+
+                self.states[q].link = clone
+                self.states[curr].link = clone
+
+        self.last = curr
+
+    def build(self, s):
+        for ch in s:
+            self.extend(ch)
+
+    def longest_common_substring(self, t):
+        v = 0
+        l = 0
+        best = 0
+
+        for ch in t:
+            while v != 0 and ch not in self.states[v].next:
+                v = self.states[v].link
+                l = self.states[v].length
+
+            if ch in self.states[v].next:
+                v = self.states[v].next[ch]
+                l += 1
+            else:
+                v = 0
+                l = 0
+
+            if l > best:
+                best = l
+
+        return best
+
+
+s1 = "abacaba"
+s2 = "bacabc"
+sam = SuffixAutomaton()
+sam.build(s1)
+
+print("Longest Common Substring Length:", sam.longest_common_substring(s2))
