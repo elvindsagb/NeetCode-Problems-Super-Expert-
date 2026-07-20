@@ -1,0 +1,120 @@
+class Suffix:
+    def __init__(self):
+        self.index = 0
+        self.rank = [0, 0]
+
+
+def build_suffix_array(text):
+    n = len(text)
+
+    suffixes = []
+
+    for i in range(n):
+        s = Suffix()
+        s.index = i
+        s.rank[0] = ord(text[i])
+        if i + 1 < n:
+            s.rank[1] = ord(text[i + 1])
+        else:
+            s.rank[1] = -1
+        suffixes.append(s)
+
+    suffixes.sort(key=lambda x: (x.rank[0], x.rank[1]))
+
+    ind = [0] * n
+
+    k = 4
+
+    while k < 2 * n:
+
+        rank = 0
+        prev_rank = suffixes[0].rank[0]
+        suffixes[0].rank[0] = 0
+        ind[suffixes[0].index] = 0
+
+        for i in range(1, n):
+
+            if (suffixes[i].rank[0] == prev_rank and
+                    suffixes[i].rank[1] == suffixes[i - 1].rank[1]):
+
+                prev_rank = suffixes[i].rank[0]
+                suffixes[i].rank[0] = rank
+
+            else:
+                prev_rank = suffixes[i].rank[0]
+                rank += 1
+                suffixes[i].rank[0] = rank
+
+            ind[suffixes[i].index] = i
+
+        for i in range(n):
+
+            next_index = suffixes[i].index + k // 2
+
+            if next_index < n:
+                suffixes[i].rank[1] = suffixes[ind[next_index]].rank[0]
+            else:
+                suffixes[i].rank[1] = -1
+
+        suffixes.sort(key=lambda x: (x.rank[0], x.rank[1]))
+
+        k *= 2
+
+    suffix_array = []
+
+    for s in suffixes:
+        suffix_array.append(s.index)
+
+    return suffix_array
+
+
+def kasai(text, suffix_array):
+
+    n = len(text)
+
+    lcp = [0] * n
+
+    inv = [0] * n
+
+    for i in range(n):
+        inv[suffix_array[i]] = i
+
+    k = 0
+
+    for i in range(n):
+
+        if inv[i] == n - 1:
+            k = 0
+            continue
+
+        j = suffix_array[inv[i] + 1]
+
+        while (i + k < n and
+               j + k < n and
+               text[i + k] == text[j + k]):
+            k += 1
+
+        lcp[inv[i]] = k
+
+        if k > 0:
+            k -= 1
+
+    return lcp
+
+
+text = input("Enter String: ")
+
+suffix_array = build_suffix_array(text)
+
+lcp = kasai(text, suffix_array)
+
+print("\nSuffix Array:")
+print(suffix_array)
+
+print("\nSuffixes:")
+
+for i in suffix_array:
+    print(str(i) + " -> " + text[i:])
+
+print("\nLCP Array:")
+print(lcp)
