@@ -1,0 +1,85 @@
+Concepts: Offline Q uery Processing Square Root Decomposition Difficulty: ⭐⭐⭐⭐⭐ (2200) Features: Efficient range queries Add/remove element logic Query sorting
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import math
+
+class Query:
+    def __init__(self, left, right, index):
+        self.left = left
+        self.right = right
+        self.index = index
+
+
+def mo_algorithm(arr, queries):
+
+    n = len(arr)
+    block_size = int(math.sqrt(n))
+
+    # Sort queries
+    queries.sort(key=lambda q: (q.left // block_size, q.right))
+
+    answers = [0] * len(queries)
+
+    current_left = 0
+    current_right = -1
+    current_sum = 0
+
+    for q in queries:
+
+        L = q.left
+        R = q.right
+
+        # Expand Right
+        while current_right < R:
+            current_right += 1
+            current_sum += arr[current_right]
+
+        # Shrink Right
+        while current_right > R:
+            current_sum -= arr[current_right]
+            current_right -= 1
+
+        # Expand Left
+        while current_left < L:
+            current_sum -= arr[current_left]
+            current_left += 1
+
+        # Shrink Left
+        while current_left > L:
+            current_left -= 1
+            current_sum += arr[current_left]
+
+        answers[q.index] = current_sum
+
+    return answers
+
+
+# -----------------------------
+# Main Program
+# -----------------------------
+
+n = int(input("Enter number of elements: "))
+
+print("Enter the array elements:")
+
+arr = list(map(int, input().split()))
+
+q = int(input("Enter number of queries: "))
+
+queries = []
+
+print("Enter queries (L R):")
+
+for i in range(q):
+
+    l, r = map(int, input().split())
+
+    queries.append(Query(l, r, i))
+
+result = mo_algorithm(arr, queries)
+
+print("\nQuery Results:")
+
+for ans in result:
+    print(ans)
